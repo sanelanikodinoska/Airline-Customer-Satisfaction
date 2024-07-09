@@ -1,0 +1,38 @@
+$schema: https://azuremlschemas.azureedge.net/latest/commandComponent.schema.json
+type: command
+
+name: train_model
+display_name: train_model
+version: 1
+
+inputs: 
+  data:
+    type: uri_folder
+  n_estimators:
+    type: integer
+    default: 100
+  max_depth:
+    type: integer
+    default: 1
+  random_state:
+    type: integer
+    default: 856
+
+outputs:
+  model_output:
+    type: mlflow_model
+  test_data:
+    type: uri_folder
+
+code: ./train-src
+
+environment: azureml://registries/azureml/environments/sklearn-1.0/labels/latest
+
+command: >-
+  python train.py 
+  --data ${{inputs.data}}
+  --n_estimators ${{inputs.n_estimators}}
+  --max_depth ${{inputs.max_depth}}
+  --random_state ${{inputs.random_state}}
+  --model_output ${{outputs.model_output}}
+  --test_data ${{outputs.test_data}}
